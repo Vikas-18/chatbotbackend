@@ -20,4 +20,6 @@ public class Complaint {
 
     String type;
 
+    boolean resolved;
+
 }
