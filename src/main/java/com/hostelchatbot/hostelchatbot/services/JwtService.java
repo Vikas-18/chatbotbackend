@@ -31,6 +31,23 @@ public class JwtService {
                 .issuedAt(issuedAt)
                 .expiresAt(expiresAt)
                 .claim("studentId", student.getId())
+                .claim("role", "STUDENT")
+                .build();
+
+        JwsHeader header = JwsHeader.with(MacAlgorithm.HS256).build();
+        String token = jwtEncoder.encode(JwtEncoderParameters.from(header, claims)).getTokenValue();
+        return new LoginResponse(token, "Bearer", TOKEN_LIFETIME.toSeconds());
+    }
+
+    public LoginResponse createAdminToken() {
+        Instant issuedAt = Instant.now();
+        Instant expiresAt = issuedAt.plus(TOKEN_LIFETIME);
+        JwtClaimsSet claims = JwtClaimsSet.builder()
+                .issuer("hostelchatbot")
+                .subject("admin")
+                .issuedAt(issuedAt)
+                .expiresAt(expiresAt)
+                .claim("role", "ADMIN")
                 .build();
 
         JwsHeader header = JwsHeader.with(MacAlgorithm.HS256).build();
