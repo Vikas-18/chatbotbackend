@@ -37,4 +37,9 @@ public class ComplaintController {
     public List<Complaint> getComplaintsByResolutionStatus(@PathVariable boolean resolved) {
         return complaintService.getComplaintsByResolutionStatus(resolved);
     }
+
+    @GetMapping("/complaints/hostel/{hostelName}")
+    public List<Complaint> getComplaintsByHostelName(@PathVariable String hostelName) {
+        return complaintService.getComplaintsByHostelName(hostelName);
+    }
 }

@@ -32,4 +32,19 @@ public class ComplaintService {
     public List<Complaint> getComplaintsByResolutionStatus(boolean resolved) {
         return complaintRepository.findByResolved(resolved);
     }
+
+    //get complaints by hostel name
+    public List<Complaint> getComplaintsByHostelName(String hostelName) {
+        return complaintRepository.findByHostelName(hostelName);
+    }
+
+    //resolve complaint by id
+    public Complaint resolveComplaint(String id) {
+        Complaint complaint = complaintRepository.findById(id).orElse(null);
+        if (complaint != null) {
+            complaint.setResolved(true);
+            return complaintRepository.save(complaint);
+        }
+        return null;
+    }
 }

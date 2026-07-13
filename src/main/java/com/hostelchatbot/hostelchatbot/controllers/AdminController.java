@@ -2,11 +2,12 @@ package com.hostelchatbot.hostelchatbot.controllers;
 
 import com.hostelchatbot.hostelchatbot.DTO.AdminLoginRequest;
 import com.hostelchatbot.hostelchatbot.DTO.AdminPasswordRequest;
+import com.hostelchatbot.hostelchatbot.DTO.Complaint;
 import com.hostelchatbot.hostelchatbot.DTO.LoginResponse;
 import com.hostelchatbot.hostelchatbot.services.AdminService;
+import com.hostelchatbot.hostelchatbot.services.ComplaintService;
 import com.hostelchatbot.hostelchatbot.services.JwtService;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,10 +17,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class AdminController {
     private final AdminService adminService;
     private final JwtService jwtService;
+    private final ComplaintService complaintService;
 
-    public AdminController(AdminService adminService, JwtService jwtService) {
+    public AdminController(AdminService adminService, JwtService jwtService, ComplaintService complaintService) {
         this.adminService = adminService;
         this.jwtService = jwtService;
+        this.complaintService = complaintService;
     }
 
     @PostMapping("/login")
@@ -34,9 +37,10 @@ public class AdminController {
         return "Admin password configured";
     }
 
-    @PutMapping("/password")
-    public String changePassword(@RequestBody AdminPasswordRequest passwordRequest) {
-        adminService.changePassword(passwordRequest.password());
-        return "Admin password updated";
+    //resolve complaint
+    @PostMapping("/complaints/resolve")
+    public Complaint resolveComplaint(@RequestBody String id) {
+        return complaintService.resolveComplaint(id);
     }
+
 }

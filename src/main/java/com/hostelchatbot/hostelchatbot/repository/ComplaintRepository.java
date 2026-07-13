@@ -11,5 +11,5 @@ public interface ComplaintRepository extends MongoRepository<Complaint, String> 
 
     List<Complaint> findByType(String type);
     List<Complaint> findByResolved(boolean resolved);
-
+    List<Complaint> findByHostelName(String hostelName);
 }

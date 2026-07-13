@@ -8,11 +8,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.Instant;
+import java.util.List;
 
 @Service
 public class AdminService {
-    private static final String ADMIN_PASSWORD_ID = "admin-password";
-
     private final AdminPasswordRepository adminPasswordRepository;
     private final PasswordEncoder passwordEncoder;
 
@@ -22,39 +21,37 @@ public class AdminService {
     }
 
     public void setupPassword(String password) {
-        AdminPassword existingPassword = adminPasswordRepository.findById(ADMIN_PASSWORD_ID).orElse(null);
+        if (password == null || password.isBlank()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Password is required");
+        }
 
-        if (existingPassword != null && password != null
-                && passwordEncoder.matches(password, existingPassword.getPasswordHash())) {
+        List<AdminPassword> existingPasswords = adminPasswordRepository.findAll();
+        boolean alreadyExists = existingPasswords.stream()
+                .anyMatch(stored -> passwordEncoder.matches(password, stored.getPasswordHash()));
+
+        if (alreadyExists) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "New password must be different");
         }
-        savePassword(password);
-    }
 
-    public void changePassword(String password) {
-        if (!adminPasswordRepository.existsById(ADMIN_PASSWORD_ID)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Admin password has not been configured");
-        }
         savePassword(password);
     }
 
     public void authenticate(String password) {
-        AdminPassword adminPassword = adminPasswordRepository.findById(ADMIN_PASSWORD_ID)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED,
-                        "Invalid admin password"));
+        if (password == null || password.isBlank()) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid admin password");
+        }
 
-        if (password == null || !passwordEncoder.matches(password, adminPassword.getPasswordHash())) {
+        List<AdminPassword> existingPasswords = adminPasswordRepository.findAll();
+        boolean valid = existingPasswords.stream()
+                .anyMatch(stored -> passwordEncoder.matches(password, stored.getPasswordHash()));
+
+        if (!valid) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid admin password");
         }
     }
 
     private void savePassword(String password) {
-        if (password == null || password.isBlank()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Password is required");
-        }
-
         AdminPassword adminPassword = new AdminPassword();
-        adminPassword.setId(ADMIN_PASSWORD_ID);
         adminPassword.setPasswordHash(passwordEncoder.encode(password));
         adminPassword.setUpdatedAt(Instant.now());
         adminPasswordRepository.save(adminPassword);

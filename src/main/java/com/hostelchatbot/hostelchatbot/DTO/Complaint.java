@@ -20,6 +20,8 @@ public class Complaint {
 
     String type;
 
+    String hostelName;
+    
     boolean resolved;
 
 }
