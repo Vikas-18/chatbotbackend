@@ -5,16 +5,34 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.hostelchatbot.hostelchatbot.DTO.Complaint;
+import com.hostelchatbot.hostelchatbot.DTO.Student;
 import com.hostelchatbot.hostelchatbot.repository.ComplaintRepository;
 
 @Service
 public class ComplaintService {
-    ComplaintRepository complaintRepository;
-    public ComplaintService(ComplaintRepository complaintRepository) {
+    private final ComplaintRepository complaintRepository;
+    private final ComplaintAiService complaintAiService;
+
+    public ComplaintService(ComplaintRepository complaintRepository, ComplaintAiService complaintAiService) {
         this.complaintRepository = complaintRepository;
-    }  
-    
+        this.complaintAiService = complaintAiService;
+    }
+
     public Complaint saveComplaint(Complaint complaint) {
+        return complaintRepository.save(complaint);
+    }
+
+    public Complaint createComplaintFromMessage(String message, Student student) {
+        ComplaintAiService.AiComplaintDraft draft = complaintAiService.parse(message);
+
+        Complaint complaint = new Complaint();
+        complaint.setName(student.getName());
+        complaint.setRoomNo(student.getRoomNo() != null ? student.getRoomNo() : "N/A");
+        complaint.setDescription(draft.description());
+        complaint.setType(draft.type());
+        complaint.setHostelName(student.getHostelName());
+        complaint.setResolved(false);
+
         return complaintRepository.save(complaint);
     }
 

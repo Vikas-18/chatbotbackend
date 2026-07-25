@@ -24,4 +24,6 @@ public class Student {
 
     String hostelName;
 
+    String roomNo;
+
 }

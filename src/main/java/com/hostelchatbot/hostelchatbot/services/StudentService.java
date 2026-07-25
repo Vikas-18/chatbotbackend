@@ -40,4 +40,9 @@ public class StudentService {
                         "Invalid roll number or password"));
     }
 
+    public Student findByRollNo(String rollNo) {
+        return studentRepository.findByRollNo(rollNo)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Student not found"));
+    }
+
 }
