@@ -184,7 +184,7 @@ public class ComplaintAiService {
                 +
                 "Use electricity for AC, fan, lights, sockets, switches, electrical appliances. " +
                 "Use room-cleaning for dirty room, cleaning, housekeeping, brooming, garbage in room. " +
-                "Use furniture for bed, chair, table, cupboard, broken furniture. " +
+                "Use furniture for bed, chair, table, cupboard, broken furniture or any furniture releated thing " +
                 "Use plumbing for water, tap, pipe, leakage, toilet, bathroom issue. " +
                 "Use sanitation for hygiene, garbage, pest, washroom cleanliness, bad smell. " +
                 "Use other for anything that does not match the categories. " +

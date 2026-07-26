@@ -13,8 +13,4 @@ public class HostelchatbotApplication {
 		SpringApplication.run(HostelchatbotApplication.class, args);
 	}
 
-	@Bean
-	CommandLineRunner runner(@Value("${spring.data.mongodb.uri}") String uri) {
-		return args -> System.out.println("Mongo URI = " + uri);
-	}
 }
